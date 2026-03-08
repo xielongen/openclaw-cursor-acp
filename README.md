@@ -50,6 +50,65 @@ Use `sessions_spawn` with:
 
 For Feishu/non-thread contexts, use `mode: "run"`.
 
+### Feishu default session binding (multi-group safe)
+
+To keep multi-turn continuity on Feishu (without thread binding), bind by scope:
+- group scope: `feishu:group:<chat_id>`
+- dm scope: `feishu:dm:<open_id>`
+- fallback: `feishu:session:<requester_session_key>`
+
+Use project script:
+
+```bash
+# resolve existing valid binding (returns empty when missing/stale)
+bash ./scripts/cursor-acp-bind.sh resolve --scope "feishu:group:oc_xxx"
+
+# set/update binding after sessions_spawn returns childSessionKey
+bash ./scripts/cursor-acp-bind.sh set --scope "feishu:group:oc_xxx" --session-key "agent:cursor:acp:xxxx"
+```
+
+Recommended runtime flow:
+1. `resolve --scope`
+2. if key exists -> `sessions_send`
+3. else -> `sessions_spawn(runtime:"acp", agentId:"cursor", mode:"run")`
+4. write back `childSessionKey` with `set --scope`
+5. on stale errors -> `clear --scope`, respawn, retry once
+
+### Start a new project in same chat
+
+In the same Feishu chat, start a fresh ACP project context by using a project-qualified scope:
+- base scope: `feishu:group:<chat_id>`
+- project scope: `feishu:group:<chat_id>:project:<slug>`
+
+Each project scope has its own ACP sessionKey, so project A/B do not mix context.
+
+### Control plane support
+
+- `set-mode <mode> --session <name>` now forwards to ACP `session/set_mode`
+  when the session has been established (after first prompt).
+- `set <configId> <valueId> --session <name>` forwards to ACP
+  `session/set_config_option`.
+
+Permission handling policy is configurable via env:
+- `OPENCLAW_CURSOR_ACP_PERMISSION_MODE=allow-once` (default)
+- `OPENCLAW_CURSOR_ACP_PERMISSION_MODE=allow-always`
+- `OPENCLAW_CURSOR_ACP_PERMISSION_MODE=reject-once`
+- `OPENCLAW_CURSOR_ACP_PERMISSION_MODE=fail`
+
+Idle handling (no hard kill while still recoverable):
+- `ACP_IDLE_TIMEOUT_MS=<ms>` enables idle detection.
+- `ACP_IDLE_AUTO_RECOVER=1` turns on soft recovery (session reload, continue waiting).
+- `ACP_IDLE_RECOVER_MAX=<n>` sets max recovery attempts before failing.
+
+Stage receipts (for multi-turn observability):
+- Enabled by default: emits `phase_start`, `phase_progress`, `phase_done` as `thought` lines.
+- `OPENCLAW_CURSOR_ACP_PHASE_RECEIPTS=0` to disable.
+- `OPENCLAW_CURSOR_ACP_PHASE_PROGRESS_EVERY=<n>` controls progress emission frequency by update count.
+
+Streaming smoothness (reduce end-burst of tiny chunks):
+- `OPENCLAW_CURSOR_ACP_STREAM_FLUSH_MS=<ms>` controls timed flush for chunk coalescing (default: `300`).
+- `OPENCLAW_CURSOR_ACP_STREAM_MIN_CHARS=<n>` flush immediately once buffered chunk size reaches threshold (default: `80`).
+
 ### Direct CLI smoke test
 
 ```bash

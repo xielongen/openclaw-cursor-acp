@@ -56,3 +56,43 @@ echo "用一句话介绍你自己" | ./bin/acpx-wrapper \
 - 确认消息里提到了「Cursor」或「用 ACP 跑 Cursor」，否则 agent 可能选了 codex/claudecode 等。
 - 确认 `openclaw.json` 里 `acp.allowedAgents` 包含 `"cursor"`。
 - 看 OpenClaw 日志里是否有 acpx 调用错误（如 command not found、bridge 报错等）。
+
+## 6. Feishu 默认绑定复用（多群并行）
+
+Feishu 没有 thread binding，建议按 scope 绑定 ACP 会话：
+
+- 群聊：`feishu:group:<chat_id>`
+- 私聊：`feishu:dm:<open_id>`
+- 兜底：`feishu:session:<requester_session_key>`
+
+```bash
+# 解析并校验绑定（失效自动清理）
+bash ./scripts/cursor-acp-bind.sh resolve --scope "feishu:group:oc_xxx"
+
+# 回写绑定（用 sessions_spawn 返回的 childSessionKey）
+bash ./scripts/cursor-acp-bind.sh set --scope "feishu:group:oc_xxx" --session-key "agent:cursor:acp:xxxx"
+
+# 清理绑定
+bash ./scripts/cursor-acp-bind.sh clear --scope "feishu:group:oc_xxx"
+```
+
+推荐分支逻辑：
+1. 先 `resolve --scope`
+2. 有 key 就 `sessions_send`
+3. 没 key 就 `sessions_spawn(runtime:"acp", agentId:"cursor", mode:"run")`
+4. 写回 `childSessionKey`
+5. 若 stale/metadata 错误，清理后重建并重试一次
+
+## 7. 同一个对话里主动新开项目
+
+用“项目作用域”来隔离上下文，不要复用旧 scope：
+
+- 旧项目：`feishu:group:<chat_id>:project:legacy`
+- 新项目：`feishu:group:<chat_id>:project:new-website`
+
+流程：
+1. 生成新项目 scope
+2. 对新 scope 执行 `resolve`（通常为空）
+3. 用 `sessions_spawn` 创建新 ACP 会话
+4. 把 `childSessionKey` 绑定到新项目 scope
+5. 后续消息按该项目 scope 继续

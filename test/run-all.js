@@ -10,6 +10,13 @@ const tests = [
   "test/map-events.test.js",
   "test/store.test.js",
   "test/integration/bridge-prompt.test.js",
+  "test/integration/bridge-stream-coalesce.test.js",
+  "test/integration/bridge-phase-receipts.test.js",
+  "test/integration/bridge-phase-receipts-off.test.js",
+  "test/integration/bridge-controls.test.js",
+  "test/integration/bridge-permission-modes.test.js",
+  "test/integration/bridge-idle-recovery.test.js",
+  "test/integration/bridge-concurrency.test.js",
   "test/wrapper.test.js",
 ];
 

@@ -46,4 +46,16 @@ rl.on("line", (line) => {
     process.stdout.write(JSON.stringify({ jsonrpc: "2.0", id, result: { stopReason: "end_turn", sessionId } }) + "\n");
     return;
   }
+  if (method === "session/set_mode") {
+    process.stdout.write(JSON.stringify({ jsonrpc: "2.0", id, result: { sessionId, modeId: msg?.params?.modeId || "agent" } }) + "\n");
+    return;
+  }
+  if (method === "session/set_config_option") {
+    process.stdout.write(JSON.stringify({
+      jsonrpc: "2.0",
+      id,
+      result: { sessionId, configId: msg?.params?.configId || "", valueId: msg?.params?.valueId || "" },
+    }) + "\n");
+    return;
+  }
 });
