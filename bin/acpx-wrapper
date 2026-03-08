@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# acpx-wrapper: if first positional arg (agent) is "cursor", exec bridge; else exec real acpx.
+set -e
+ARGV=("$@")
+
+# Find first "agent" argument: first non-flag after optional flags.
+# Flags with value: --format --cwd --timeout --ttl --non-interactive-permissions --session --name --file
+AGENT=""
+i=0
+while [ $i -lt ${#ARGV[@]} ]; do
+  a="${ARGV[$i]}"
+  case "$a" in
+    --cwd|--format|--timeout|--ttl|--session|--name|--file|--non-interactive-permissions)
+      i=$((i+2))
+      continue
+      ;;
+    --*)
+      i=$((i+1))
+      continue
+      ;;
+    *)
+      AGENT="$a"
+      break
+      ;;
+  esac
+done
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BRIDGE_JS="${SCRIPT_DIR}/bridge.js"
+REAL_ACPX="${ACPX_REAL:-}"
+
+if [ -z "$REAL_ACPX" ] && [ -x "${SCRIPT_DIR}/acpx" ]; then
+  REAL_ACPX="${SCRIPT_DIR}/acpx"
+fi
+if [ -z "$REAL_ACPX" ]; then
+  REAL_ACPX="acpx"
+fi
+
+if [ "$AGENT" = "cursor" ] && [ -f "$BRIDGE_JS" ]; then
+  exec node "$BRIDGE_JS" "$@"
+fi
+case "$REAL_ACPX" in
+  *.js|*.cjs|*.mjs)
+    exec node "$REAL_ACPX" "$@"
+    ;;
+  *)
+    exec "$REAL_ACPX" "$@"
+    ;;
+esac
