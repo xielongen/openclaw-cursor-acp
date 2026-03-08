@@ -70,6 +70,26 @@ fi
 REAL_ACPX="${OPENCLAW_ACPX_BIN}"
 if [ -L "$OPENCLAW_ACPX_BIN" ] && [ -f "$BACKUP_DIR/acpx.realpath" ]; then
   REAL_ACPX=$(cat "$BACKUP_DIR/acpx.realpath")
+elif [ -f "$OPENCLAW_ACPX_BIN" ]; then
+  # If current .bin/acpx is already a wrapper script, recover the previous real path from ACPX_REAL.
+  embedded_real=$(python3 - "$OPENCLAW_ACPX_BIN" <<'PY'
+import re,sys
+from pathlib import Path
+p = Path(sys.argv[1])
+txt = p.read_text(encoding="utf-8", errors="ignore")
+m = re.search(r'ACPX_REAL="([^"]+)"', txt)
+print(m.group(1) if m else "")
+PY
+)
+  if [ -n "$embedded_real" ] && [ "$embedded_real" != "$OPENCLAW_ACPX_BIN" ]; then
+    REAL_ACPX="$embedded_real"
+  else
+    # Fallback: plugin-local bundled acpx entry.
+    candidate="$(dirname "$OPENCLAW_ACPX_BIN")/../acpx/dist/cli.js"
+    if [ -f "$candidate" ]; then
+      REAL_ACPX="$candidate"
+    fi
+  fi
 fi
 
 # Replace with wrapper invoker
