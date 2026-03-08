@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Deploy acp2acpx: replace OpenClaw acpx plugin's binary with wrapper (with backup for rollback).
+# Deploy openclaw-cursor-acp: replace OpenClaw acpx plugin binary with wrapper.
 set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
@@ -43,7 +43,7 @@ find_openclaw_acpx_bin() {
   done
 }
 
-echo "== acp2acpx deploy =="
+echo "== openclaw-cursor-acp deploy =="
 find_openclaw_acpx_bin
 if [ -z "$OPENCLAW_ACPX_BIN" ]; then
   echo "Error: could not find openclaw acpx binary (run from a dir where openclaw is resolvable, or set OPENCLAW_ACPX_BIN)."

@@ -19,7 +19,7 @@ npm test
 ```bash
 git init
 git add .
-git commit -m "chore: prepare acp2acpx for public release"
+git commit -m "chore: prepare openclaw-cursor-acp for public release"
 git branch -M main
 git remote add origin <your-repo-url>
 git push -u origin main

@@ -12,7 +12,7 @@ const argv = process.argv.slice(2);
 const parsed = parseArgv(argv);
 
 if (parsed.agent !== "cursor") {
-  process.stderr.write("acp2acpx bridge: expected agent cursor\n");
+  process.stderr.write("openclaw-cursor-acp bridge: expected agent cursor\n");
   process.exit(2);
 }
 
@@ -53,7 +53,7 @@ async function main() {
     process.exit(0);
   }
 
-  process.stderr.write("acp2acpx bridge: unknown subcommand " + String(parsed.subcommand) + "\n");
+  process.stderr.write("openclaw-cursor-acp bridge: unknown subcommand " + String(parsed.subcommand) + "\n");
   process.stdout.write(JSON.stringify({ type: "error", code: "USAGE", message: "unknown command" }) + "\n");
   process.exit(2);
 }

@@ -48,7 +48,8 @@ echo "用一句话介绍你自己" | ./bin/acpx-wrapper \
 ## 4. 会话与多轮
 
 - 同一 `--session <name>` 会复用同一 Cursor 会话，实现多轮对话。
-- 会话名与 Cursor 内部 session 的对应关系存在 `~/.acp2acpx/sessions.json`（可用环境变量 `ACP2ACPX_SESSIONS_FILE` 改路径）。
+- 会话名与 Cursor 内部 session 的对应关系默认存在 `~/.openclaw-cursor-acp/sessions.json`（兼容旧路径 `~/.acp2acpx/sessions.json`）。
+- 可用环境变量 `OPENCLAW_CURSOR_ACP_SESSIONS_FILE`（或旧变量 `ACP2ACPX_SESSIONS_FILE`）自定义路径。
 
 ## 5. 若没走 Cursor
 

@@ -3,7 +3,7 @@
 ## Local setup
 
 ```bash
-cd /path/to/acp2acpx
+cd /path/to/openclaw-cursor-acp
 npm test
 ```
 

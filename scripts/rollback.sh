@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Rollback acp2acpx: restore OpenClaw acpx plugin's original binary.
+# Rollback openclaw-cursor-acp: restore OpenClaw acpx plugin original binary.
 set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
@@ -36,7 +36,7 @@ find_openclaw_acpx_bin() {
   done
 }
 
-echo "== acp2acpx rollback =="
+echo "== openclaw-cursor-acp rollback =="
 find_openclaw_acpx_bin
 if [ -z "$OPENCLAW_ACPX_BIN" ]; then
   echo "Error: could not find openclaw acpx path. Set OPENCLAW_ACPX_BIN to the plugin .bin/acpx path."

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Install acp2acpx into local OpenClaw acpx plugin.
+# Install openclaw-cursor-acp into local OpenClaw acpx plugin.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-echo "== acp2acpx install =="
+echo "== openclaw-cursor-acp install =="
 echo "Project: $PROJECT_DIR"
 
 if ! command -v node >/dev/null 2>&1; then

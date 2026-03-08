@@ -1,10 +1,12 @@
 {
-  "name": "acp2acpx",
+  "name": "openclaw-cursor-acp",
   "version": "0.1.0",
   "description": "Bridge OpenClaw acpx protocol to Cursor standard ACP",
   "type": "module",
   "main": "bin/bridge.js",
   "bin": {
+    "openclaw-cursor-acp-bridge": "bin/bridge.js",
+    "openclaw-cursor-acp-wrapper": "bin/acpx-wrapper",
     "acp2acpx-bridge": "bin/bridge.js",
     "acp2acpx-wrapper": "bin/acpx-wrapper"
   },

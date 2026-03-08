@@ -1,16 +1,16 @@
-# acp2acpx
+# openclaw-cursor-acp
 
 Use Cursor as an ACP coding backend in OpenClaw, without changing OpenClaw core.
 
-`acp2acpx` provides:
+`openclaw-cursor-acp` provides:
 - a wrapper (`bin/acpx-wrapper`) that intercepts only `cursor` requests
 - a bridge (`bin/bridge.js`) that maps OpenClaw acpx-style commands to standard ACP (`agent acp`)
 - session persistence (`sessionName -> cursorSessionId`) for multi-turn runs
 
 ## Why this exists
 
-OpenClaw's ACP runtime talks to an `acpx` command with acpx-style CLI/event semantics.  
-Cursor exposes standard ACP (`agent acp`) over JSON-RPC.  
+OpenClaw's ACP runtime talks to an `acpx` command with acpx-style CLI/event semantics.
+Cursor exposes standard ACP (`agent acp`) over JSON-RPC.
 This project bridges those two worlds.
 
 ## Prerequisites
@@ -23,7 +23,7 @@ This project bridges those two worlds.
 ## Quick Start (recommended)
 
 ```bash
-cd /path/to/acp2acpx
+cd /path/to/openclaw-cursor-acp
 npm test
 npm run install:openclaw
 ```
@@ -36,7 +36,7 @@ This will:
 ## Uninstall / Rollback
 
 ```bash
-cd /path/to/acp2acpx
+cd /path/to/openclaw-cursor-acp
 npm run uninstall:openclaw
 ```
 

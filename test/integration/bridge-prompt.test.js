@@ -19,7 +19,7 @@ const argv = [
 const env = {
   ...process.env,
   ACP_AGENT_BIN: fakeAgentPath,
-  ACP2ACPX_SESSIONS_FILE: join(projectRoot, "test/.sessions-integration.json"),
+  OPENCLAW_CURSOR_ACP_SESSIONS_FILE: join(projectRoot, "test/.sessions-integration.json"),
 };
 
 const child = spawn("node", [bridgePath, ...argv], {

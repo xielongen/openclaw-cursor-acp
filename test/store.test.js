@@ -3,7 +3,7 @@ import { join } from "path";
 import { tmpdir } from "os";
 import { createStore } from "../lib/store.js";
 
-const dir = mkdtempSync(join(tmpdir(), "acp2acpx-store-test-"));
+const dir = mkdtempSync(join(tmpdir(), "openclaw-cursor-acp-store-test-"));
 const filePath = join(dir, "sessions.json");
 
 (async () => {

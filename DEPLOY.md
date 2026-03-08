@@ -1,15 +1,15 @@
-# acp2acpx 部署与回退
+# openclaw-cursor-acp 部署与回退
 
 ## 已做备份
 
-- **openclaw.json**：备份在 `workspace/backups/openclaw.json.bak.pre-acp2acpx-YYYYMMDD-HHMMSS`，部署前已复制一份。
-- **acpx 二进制**：部署时在 `workspace/projects/acp2acpx/deploy-backup/` 保存了插件原 `.bin/acpx` 的符号链接目标（`acpx.symlink.target`）和真实路径（`acpx.realpath`），用于回退时恢复。
+- **openclaw.json**：备份在 `workspace/backups/openclaw.json.bak.pre-openclaw-cursor-acp-YYYYMMDD-HHMMSS`，部署前已复制一份。
+- **acpx 二进制**：部署时在 `workspace/projects/openclaw-cursor-acp/deploy-backup/` 保存了插件原 `.bin/acpx` 的符号链接目标（`acpx.symlink.target`）和真实路径（`acpx.realpath`），用于回退时恢复。
 
 ## 部署步骤（已完成可略过）
 
 1. **备份 openclaw.json**（若尚未备份）
    ```bash
-   cp ~/.openclaw/openclaw.json ~/workspace/backups/openclaw.json.bak.pre-acp2acpx-$(date +%Y%m%d-%H%M%S)
+   cp ~/.openclaw/openclaw.json ~/workspace/backups/openclaw.json.bak.pre-openclaw-cursor-acp-$(date +%Y%m%d-%H%M%S)
    ```
 
 2. **确保插件目录有 acpx**
@@ -19,7 +19,7 @@
 
 3. **执行部署脚本**
    ```bash
-   cd /path/to/acp2acpx && ./scripts/deploy.sh
+   cd /path/to/openclaw-cursor-acp && ./scripts/deploy.sh
    ```
    脚本会：把插件内的 `extensions/acpx/node_modules/.bin/acpx` 替换为调用本仓库 `bin/acpx-wrapper` 的脚本，并设 `ACPX_REAL` 为原 acpx（非 cursor 请求仍走原 acpx）。
 
@@ -37,10 +37,10 @@
 
 ### 恢复 acpx 二进制
 
-在 acp2acpx 项目目录执行：
+在 openclaw-cursor-acp 项目目录执行：
 
 ```bash
-cd /path/to/acp2acpx && ./scripts/rollback.sh
+cd /path/to/openclaw-cursor-acp && ./scripts/rollback.sh
 ```
 
 会从 `deploy-backup/` 恢复插件原来的 `.bin/acpx`（符号链接或备份文件）。
@@ -48,7 +48,7 @@ cd /path/to/acp2acpx && ./scripts/rollback.sh
 ### 恢复 openclaw.json（若曾改过）
 
 ```bash
-cp ~/workspace/backups/openclaw.json.bak.pre-acp2acpx-<timestamp> ~/.openclaw/openclaw.json
+cp ~/workspace/backups/openclaw.json.bak.pre-openclaw-cursor-acp-<timestamp> ~/.openclaw/openclaw.json
 ```
 
 用你要回退的那份备份文件名替换 `<timestamp>`。
@@ -65,13 +65,13 @@ cp ~/workspace/backups/openclaw.json.bak.pre-acp2acpx-<timestamp> ~/.openclaw/op
 
 - **包装器 + Cursor**：
   ```bash
-  echo "hello" | ACPX_REAL=/path/to/real/acpx /path/to/acp2acpx/bin/acpx-wrapper --format json --json-strict --cwd /tmp cursor prompt --session test1 --file -
+  echo "hello" | ACPX_REAL=/path/to/real/acpx /path/to/openclaw-cursor-acp/bin/acpx-wrapper --format json --json-strict --cwd /tmp cursor prompt --session test1 --file -
   ```
 - **OpenClaw**：使用 `sessions_spawn`，`runtime: "acp"`，`agentId: "cursor"`，确认会话能创建并收到 acpx 格式事件。
 
 ## 路径说明
 
-- 包装脚本：`/path/to/acp2acpx/bin/acpx-wrapper`
+- 包装脚本：`/path/to/openclaw-cursor-acp/bin/acpx-wrapper`
 - 桥接入口：`bin/bridge.js`（由 wrapper 在 agent=cursor 时用 node 执行）
-- 部署备份：`workspace/projects/acp2acpx/deploy-backup/`
-- 配置备份：`workspace/backups/openclaw.json.bak.pre-acp2acpx-*`
+- 部署备份：`workspace/projects/openclaw-cursor-acp/deploy-backup/`
+- 配置备份：`workspace/backups/openclaw.json.bak.pre-openclaw-cursor-acp-*`
